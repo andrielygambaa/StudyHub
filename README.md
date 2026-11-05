@@ -79,4 +79,4 @@ Tabelas: `usuario`, `materia`, `topico`, `sessao_estudo`, `baralho`, `cartao`, `
 
 ## Autor
 
-Projeto individual. Preencha aqui: nome, turma (2º TI-_) e data.
+Nome: Andriely Gamba, turma: (2º TIA)
