@@ -1,7 +1,5 @@
 # Diagrama de Classes (UML) - StudyHub
 
-Diagrama de classes do domínio do sistema. O GitHub renderiza o bloco abaixo automaticamente.
-O mesmo diagrama está em `diagrama_classes.mermaid`.
 
 ```mermaid
 classDiagram
