@@ -73,8 +73,8 @@ Tabelas: `usuario`, `materia`, `topico`, `sessao_estudo`, `baralho`, `cartao`, `
 
 | Etapa | Prazo | Conteúdo | Situação |
 |---|---|---|---|
-| Etapa 1 | 09/11/2026 | Modelagem e criação do banco: UML revisado, tabelas criadas e funcionando, conexão inicial do sistema com o banco | Em andamento |
-| Etapa 2 | 13/11/2026 | Back-end funcional em Python: classes, DAOs e rotas Flask (POO), cadastro e consulta no banco funcionando | Pendente |
+| Etapa 1 | 09/11/2026 | Modelagem e criação do banco: UML revisado, tabelas criadas e funcionando, conexão inicial do sistema com o banco | Concluída |
+| Etapa 2 | 13/11/2026 | Back-end funcional em Python: classes, DAOs e rotas Flask (POO), cadastro e consulta no banco funcionando | Em andamento |
 | Entrega Final | 17/11/2026 | Sistema completo, com front-end (HTML/CSS/JS) consumindo as rotas Flask via Fetch, de ponta a ponta | Pendente |
 
 ## Autor
