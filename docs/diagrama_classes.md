@@ -1,6 +1,8 @@
 # Diagrama de Classes (UML) - StudyHub
 
 
+
+
 ```mermaid
 classDiagram
     direction TB
