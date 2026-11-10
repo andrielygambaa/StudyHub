@@ -11,61 +11,92 @@ O StudyHub reúne quatro módulos ligados por uma camada de gamificação:
 
 ## Tecnologias
 
-- **Banco de dados:** SQLite (10 tabelas)
-- **Back-end:** Python 3 com Flask, usando Programação Orientada a Objetos (models, DAOs, services e rotas)
+- **Banco de dados:** MySQL (10 tabelas)
+- **Back-end:** Python 3 com Flask e PyMySQL, usando Programação Orientada a Objetos (models, DAOs, services e rotas)
 - **Front-end:** HTML, CSS e JavaScript (consumo das rotas Flask via Fetch)
+
+## Como fazer funcionar
+
+### O que instalar antes
+
+1. **Python 3.9 ou superior** (https://www.python.org). No Windows, marque "Add Python to PATH" na instalação.
+2. **MySQL** ligado no seu computador. Pode ser o **XAMPP** (clique em *Start* no MySQL) ou o **MySQL Server**.
+
+### Passo a passo
+
+```bash
+# 1. Instalar as bibliotecas do projeto (na pasta do projeto)
+pip install -r requirements.txt
+
+# 2. Configurar o acesso ao MySQL
+#    copie backend/.env.example para backend/.env e ajuste o usuário e a senha
+#    (no XAMPP o usuário é "root" e a senha fica em branco)
+
+# 3. Criar o banco, as tabelas e os dados iniciais
+python backend/init_db.py
+
+# 4. Iniciar o sistema
+python backend/app.py
+```
+
+Depois abra **http://127.0.0.1:5000** no navegador. A página inicial mostra "Banco conectado (10 tabelas)" quando tudo está certo.
+
+Para apagar tudo e recriar o banco do zero: `python backend/init_db.py --reset`
+
+### O arquivo backend/.env
+
+```
+STUDYHUB_DB_HOST=localhost
+STUDYHUB_DB_PORT=3306
+STUDYHUB_DB_USER=root
+STUDYHUB_DB_PASSWORD=sua_senha_aqui
+STUDYHUB_DB_NAME=studyhub
+```
+
+Esse arquivo não vai para o GitHub (está no `.gitignore`), então a sua senha fica só no seu computador.
+
+### Se der erro
+
+| Mensagem | O que fazer |
+|---|---|
+| `O PyMySQL não está instalado` | rode `pip install -r requirements.txt` |
+| `Usuário ou senha do MySQL incorretos` | corrija `STUDYHUB_DB_USER` e `STUDYHUB_DB_PASSWORD` no `backend/.env` |
+| `Não consegui conectar ao MySQL` | ligue o MySQL (XAMPP: botão *Start*) e confira host e porta no `.env` |
+| Página com "O banco não tem tabelas" | rode `python backend/init_db.py` |
+| `cryptography` ou `caching_sha2_password` | rode `pip install cryptography` (já está no requirements) |
+
+### Modo SQLite (opcional, para testar sem MySQL)
+
+Se o MySQL ainda não estiver pronto, dá para rodar o sistema com um banco de arquivo, sem instalar nada. Coloque `STUDYHUB_BANCO=sqlite` no `backend/.env` e rode os passos 3 e 4. Os dados desse modo ficam em `database/studyhub.db`. Para o projeto valer na entrega, use o MySQL.
 
 ## Estrutura do repositório
 
 ```
 studyhub/
 ├── database/
-│   ├── schema.sql              # criação das 10 tabelas
-│   └── seed.sql                # matérias, conquistas e usuário de demonstração
+│   ├── schema.sql              # banco "studyhub" e as 10 tabelas (MySQL)
+│   ├── seed.sql                # matérias, conquistas e usuário de demonstração
+│   └── sqlite/                 # mesmos scripts para o modo de teste SQLite
 ├── docs/
 │   ├── diagrama_classes.md     # UML (renderizado pelo GitHub)
 │   ├── diagrama_classes.mermaid
-│   └── API.md                  # todas as rotas, regras de XP e conquistas
+│   ├── API.md                  # todas as rotas, regras de XP e conquistas
+│   └── entrega/studyhub.sql    # script básico entregue ao professor
 ├── backend/
 │   ├── app.py                  # aplicação Flask e tratamento de erros
-│   ├── config.py               # caminhos e configurações
+│   ├── config.py               # configurações (lê o .env)
 │   ├── db.py                   # classe Conexao (commit/rollback)
 │   ├── init_db.py              # cria o banco a partir do schema.sql
-│   ├── erros.py                # erros de negócio (400, 404, 409)
-│   ├── validacao.py            # validações reutilizadas
+│   ├── erros.py, validacao.py
 │   ├── models/                 # classes do domínio
 │   ├── dao/                    # acesso ao banco (SQL)
 │   ├── services/               # regras entre módulos e transações
 │   └── routes/                 # rotas Flask, um Blueprint por módulo
-├── frontend/
-│   ├── index.html
-│   ├── css/style.css
-│   └── js/app.js
+├── frontend/                   # HTML, CSS e JS
 ├── tests/                      # testes automatizados
 ├── requirements.txt
 └── README.md
 ```
-
-## Como executar
-
-```bash
-# 1. (opcional) criar e ativar um ambiente virtual
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-
-# 2. instalar as dependências
-pip install -r requirements.txt
-
-# 3. criar o banco de dados (tabelas e dados iniciais)
-python backend/init_db.py
-
-# 4. iniciar o servidor
-python backend/app.py
-```
-
-Depois, abra http://127.0.0.1:5000 no navegador. A página inicial mostra se a conexão com o banco está funcionando. Para conferir pela API: http://127.0.0.1:5000/api/health
-
-Para apagar o banco e recriar do zero: `python backend/init_db.py --reset`
 
 ## Testes
 
@@ -73,7 +104,7 @@ Para apagar o banco e recriar do zero: `python backend/init_db.py --reset`
 python -m unittest discover -s tests -v
 ```
 
-Os testes usam um banco temporário e nunca alteram `database/studyhub.db`.
+Com o MySQL ligado, os testes criam e apagam um banco separado chamado **`studyhub_teste`**. O banco `studyhub`, com os seus dados, nunca é tocado.
 
 ## API
 
@@ -93,7 +124,7 @@ A resposta traz a sessão gravada e o campo `gamificacao`, com o XP ganho e as c
 
 O diagrama de classes está em [`docs/diagrama_classes.md`](docs/diagrama_classes.md).
 
-Tabelas: `usuario`, `materia`, `topico`, `sessao_estudo`, `baralho`, `cartao`, `revisao_cartao`, `xp_log`, `conquista` e `usuario_conquista` (N:N entre usuário e conquista).
+Tabelas: `usuario`, `materia`, `topico`, `sessao_estudo`, `baralho`, `cartao`, `revisao_cartao`, `xp_log`, `conquista` e `usuario_conquista` (N:N entre usuário e conquista, com chave primária composta).
 
 ## Etapas de entrega
 

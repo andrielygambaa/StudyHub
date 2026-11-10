@@ -1,4 +1,5 @@
 from dao.base_dao import BaseDAO
+from db import INSERT_IGNORE
 from models.conquista import Conquista
 from models.usuario_conquista import UsuarioConquista
 
@@ -20,7 +21,7 @@ class ConquistaDAO(BaseDAO):
     def desbloquear(self, usuario_id, conquista_id):
         """Registra a conquista para o usuário. Devolve False se ele já tinha."""
         _, afetadas = self._executar(
-            "INSERT OR IGNORE INTO usuario_conquista (usuario_id, conquista_id) VALUES (?, ?)",
+            f"{INSERT_IGNORE} INTO usuario_conquista (usuario_id, conquista_id) VALUES (?, ?)",
             (usuario_id, conquista_id),
         )
         return afetadas > 0

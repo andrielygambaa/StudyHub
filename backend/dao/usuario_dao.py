@@ -1,6 +1,5 @@
-import sqlite3
-
 from dao.base_dao import BaseDAO
+from db import ErroIntegridade
 from erros import ConflitoErro
 from models.usuario import Usuario
 
@@ -16,7 +15,7 @@ class UsuarioDAO(BaseDAO):
                 "INSERT INTO usuario (nome, email) VALUES (?, ?)",
                 (usuario.nome, usuario.email),
             )
-        except sqlite3.IntegrityError:
+        except ErroIntegridade:
             raise ConflitoErro("Já existe um usuário com esse e-mail.")
         return self.exigir(novo_id)
 
@@ -26,7 +25,7 @@ class UsuarioDAO(BaseDAO):
                 "UPDATE usuario SET nome = ?, email = ? WHERE id = ?",
                 (usuario.nome, usuario.email, usuario.id),
             )
-        except sqlite3.IntegrityError:
+        except ErroIntegridade:
             raise ConflitoErro("Já existe um usuário com esse e-mail.")
         return self.exigir(usuario.id)
 

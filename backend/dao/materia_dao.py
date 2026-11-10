@@ -1,6 +1,5 @@
-import sqlite3
-
 from dao.base_dao import BaseDAO
+from db import ErroIntegridade
 from erros import ConflitoErro
 from models.materia import Materia
 
@@ -15,7 +14,7 @@ class MateriaDAO(BaseDAO):
             novo_id, _ = self._executar(
                 "INSERT INTO materia (nome, cor) VALUES (?, ?)", (materia.nome, materia.cor)
             )
-        except sqlite3.IntegrityError:
+        except ErroIntegridade:
             raise ConflitoErro("Já existe uma matéria com esse nome.")
         return self.exigir(novo_id)
 
@@ -25,7 +24,7 @@ class MateriaDAO(BaseDAO):
                 "UPDATE materia SET nome = ?, cor = ? WHERE id = ?",
                 (materia.nome, materia.cor, materia.id),
             )
-        except sqlite3.IntegrityError:
+        except ErroIntegridade:
             raise ConflitoErro("Já existe uma matéria com esse nome.")
         return self.exigir(materia.id)
 
@@ -33,7 +32,7 @@ class MateriaDAO(BaseDAO):
         self.exigir(id)
         try:
             self._executar("DELETE FROM materia WHERE id = ?", (id,))
-        except sqlite3.IntegrityError:
+        except ErroIntegridade:
             raise ConflitoErro("A matéria está em uso por tópicos, sessões ou baralhos e não pode ser excluída.")
 
     def listar_todos(self, ordem="nome"):

@@ -7,13 +7,11 @@ As rotas da API ficam em /api (veja docs/API.md). O Flask também serve o
 front-end, então o Fetch usa o mesmo endereço (sem CORS).
 """
 
-import sqlite3
-
 from flask import Flask, jsonify
 from werkzeug.exceptions import HTTPException
 
-from config import DB_PATH, FRONTEND_DIR
-from db import Conexao
+from config import FRONTEND_DIR, TIPO_BANCO
+from db import Conexao, ErroIntegridade
 from erros import ErroApp
 from routes import registrar_rotas
 
@@ -29,21 +27,21 @@ def criar_app():
 
     @app.get("/api/health")
     def health():
-        if not DB_PATH.exists():
-            return jsonify(
-                status="erro",
-                mensagem="Banco não encontrado. Rode: python backend/init_db.py",
-            ), 503
-
         conexao = Conexao()
         try:
             if not conexao.testar():
-                return jsonify(status="erro", mensagem="Banco não respondeu."), 503
+                return jsonify(
+                    status="erro",
+                    mensagem="Não foi possível conectar ao banco. Confira se o MySQL está ligado "
+                             "e os dados do arquivo backend/.env.",
+                ), 503
             tabelas = conexao.listar_tabelas()
         finally:
             conexao.fechar()
 
-        return jsonify(status="ok", banco="conectado", total_tabelas=len(tabelas), tabelas=tabelas)
+        if not tabelas:
+            return jsonify(status="erro", mensagem="O banco não tem tabelas. Rode: python backend/init_db.py"), 503
+        return jsonify(status="ok", banco="conectado", tipo=TIPO_BANCO, total_tabelas=len(tabelas), tabelas=tabelas)
 
     registrar_rotas(app)
 
@@ -52,9 +50,11 @@ def criar_app():
     def erro_de_negocio(erro):
         return jsonify(erro=erro.mensagem), erro.status
 
-    @app.errorhandler(sqlite3.IntegrityError)
     def erro_de_integridade(erro):
         return jsonify(erro="A operação viola uma regra de integridade do banco de dados."), 409
+
+    for classe_de_erro in ErroIntegridade:
+        app.register_error_handler(classe_de_erro, erro_de_integridade)
 
     @app.errorhandler(HTTPException)
     def erro_http(erro):
