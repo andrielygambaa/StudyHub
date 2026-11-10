@@ -135,5 +135,4 @@ Tabelas: `usuario`, `materia`, `topico`, `sessao_estudo`, `baralho`, `cartao`, `
 | Entrega Final | 17/11/2026 | Sistema completo, com front-end (HTML/CSS/JS) consumindo as rotas Flask via Fetch, de ponta a ponta | Pendente |
 
 ## Autor
-
-Projeto individual. Preencha aqui: nome, turma (2º TI-_) e data.
+Andriely Gamba, turma (2º TIA) 
