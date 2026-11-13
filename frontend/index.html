@@ -3,19 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a12">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <title>StudyHub</title>
+  <title>StudyHub — seu espaço de estudos</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <main class="card">
-    <h1>StudyHub</h1>
-    <p class="subtitulo">Plataforma de estudos: Pomodoro, Planner, Flashcards e Gamificação</p>
-    <p id="status" class="status">Verificando conexão com o banco...</p>
-    <p class="etapa">Etapa 1: modelagem e banco de dados</p>
-  </main>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#" data-view="dashboard" aria-label="StudyHub, início">
+        <span class="brand-mark">S</span>
+        <span>Study<span>Hub</span></span>
+      </a>
+      <p class="nav-label">SEU ESPAÇO</p>
+      <nav class="main-nav">
+        <button class="nav-item active" type="button" data-view="dashboard"><span class="nav-icon">⌂</span> Visão geral</button>
+        <button class="nav-item" type="button" data-view="pomodoro"><span class="nav-icon">◷</span> Pomodoro</button>
+        <button class="nav-item" type="button" data-view="planner"><span class="nav-icon">▤</span> Planner</button>
+        <button class="nav-item" type="button" data-view="flashcards"><span class="nav-icon">▱</span> Flashcards</button>
+        <button class="nav-item" type="button" data-view="gamification"><span class="nav-icon">✧</span> Conquistas</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item" type="button" data-view="subjects"><span class="nav-icon">◈</span> Matérias</button>
+        <div class="sidebar-note"><span class="note-dot"></span><span id="connection-label">Conectando ao StudyHub</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">SEU ESPAÇO DE APRENDIZADO</p>
+          <p class="topbar-title">Um passo de cada vez.</p>
+        </div>
+        <div class="topbar-actions">
+          <label class="sr-only" for="user-select">Usuário ativo</label>
+          <select id="user-select" class="user-select" aria-label="Selecionar usuário" disabled>
+            <option value="">Carregando...</option>
+          </select>
+          <button type="button" class="icon-button" data-action="new-user" aria-label="Cadastrar usuário" title="Cadastrar usuário">+</button>
+        </div>
+      </header>
+      <section id="workspace" class="workspace" aria-live="polite">
+        <div class="loading-state"><span class="loader"></span><p>Preparando seu espaço de estudos...</p></div>
+      </section>
+    </main>
+  </div>
+  <div id="toast-region" class="toast-region" aria-live="assertive" aria-atomic="true"></div>
   <script src="js/app.js"></script>
 </body>
 </html>
